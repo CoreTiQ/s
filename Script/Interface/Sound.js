@@ -18,7 +18,7 @@ function MakeSound(typ, dly) {
 
         if (typ >= 1 && typ <= 211) {
             sounds[soundsconst.id].sound.src = audioSrc;
-            sounds[soundsconst.id].sound.playbackRate = 2.0; // زيادة سرعة التشغيل إلى الضعف (x2)
+            sounds[soundsconst.id].sound.playbackRate = 5.0; // زيادة سرعة التشغيل إلى الضعف (x2)
         } else {
             console.log("Invalid sound type: " + typ);
         }
