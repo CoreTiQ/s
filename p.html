@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEGs</title>
+    <!-- إضافة UIkit -->
+    <link href="https://cdn.jsdelivr.net/npm/uikit@3.16.23/dist/css/uikit.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.23/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.23/dist/js/uikit-icons.min.js"></script>
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .container {
+            margin-top: 50px;
+            background-color: #ffffff;ح
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        .output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            word-wrap: break-word;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<section class="uk-section">
+    <div class="uk-container">
+        <!-- <h1 class="uk-heading-line uk-text-center"><span>زيج</span></h1>-->
+
+        <!-- حقل الإدخال -->
+        <div class="uk-margin">
+            <label class="uk-form-label">أدخل النص هنا:</label>
+            <textarea class="uk-textarea" id="inputText" rows="5" placeholder="أدخل النص هنا..."></textarea>
+        </div>
+
+        <!-- زر الاستخراج -->
+        <button class="uk-button uk-button-primary uk-width-1-1" onclick="extractPEGs()">استخراج PEGs</button>
+
+        <!-- زر النسخ -->
+        <button class="uk-button uk-button-default uk-width-1-1 uk-margin-top" onclick="copyToClipboard()">نسخ النتيجة</button>
+
+        <!-- زر الذهاب إلى الموقع -->
+        <a href="https://piellardj.github.io/image-stylization-threading/?page%3Atabs%3Ashape-tabs-id=1&page%3Atabs%3Aquality-tabs-id=3&page%3Arange%3Aopacity-range-id=2&page%3Acheckbox%3Adisplay-pegs-checkbox-id=true&page%3Acheckbox%3Ainvert-colors-checkbox-id=false&page%3Arange%3Apegs-range-id=250&page%3Acanvas%3Afullscreen=false&page%3Arange%3Alines-range-id=3500" target="_blank" class="uk-button uk-button-secondary uk-width-1-1 uk-margin-top">فتح الخوارزمية</a>
+
+        <!-- عرض النتائج -->
+        <div class="output" id="outputText"></div>
+    </div>
+</section>
+
+<script>
+    function extractPEGs() {
+        // الحصول على النص المدخل
+        let inputText = document.getElementById("inputText").value;
+
+        // استخدام تعبير منتظم للبحث عن جميع القيم التي تبدأ بـ PEG_
+        let pegs = inputText.match(/PEG_\d+/g);
+
+        // إذا تم العثور على نتائج، نقوم بدمجها في سلسلة واحدة
+        let result = pegs ? pegs.join('') : 'لم يتم العثور على PEGs';
+
+        // عرض النتيجة في القسم المخصص
+        document.getElementById("outputText").textContent = result;
+    }
+
+    function copyToClipboard() {
+        // الحصول على النص من النتيجة
+        let textToCopy = document.getElementById("outputText").textContent;
+
+        // نسخ النص إلى الحافظة
+        navigator.clipboard.writeText(textToCopy).then(function() {
+            UIkit.notification({message: 'تم نسخ النص!', status: 'success'});
+        }, function(err) {
+            UIkit.notification({message: 'فشل في نسخ النص', status: 'danger'});
+        });
+    }
+</script>
+
+</body>
+</html>
