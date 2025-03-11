@@ -325,6 +325,9 @@
         const convertBtn = document.getElementById('convert-btn');
         const spinner = document.getElementById('spinner');
         
+        // متغير عام للأحرف العشوائية - سيكون ثابتاً لكل الأجزاء
+        let currentRandomLetters = generateRandomLetters(3);
+        
         // إضافة مستمع حدث لرفع الملف
         document.addEventListener('DOMContentLoaded', function() {
             fileInput.addEventListener('change', handleFileUpload);
@@ -332,6 +335,8 @@
             // إضافة مستمع لتغييرات النص لتعطيل زر التحويل إذا كان الإدخال فارغاً
             inputElement.addEventListener('input', function() {
                 convertBtn.disabled = !inputElement.value.trim();
+                // توليد أحرف عشوائية جديدة عند تغيير النص
+                currentRandomLetters = generateRandomLetters(3);
             });
             
             // تعطيل زر التحويل مبدئياً إذا كان الإدخال فارغاً
@@ -352,6 +357,8 @@
                 inputElement.value = contents;
                 showSuccessMessage('تم تحميل الملف بنجاح');
                 convertBtn.disabled = !contents.trim();
+                // توليد أحرف عشوائية جديدة عند رفع ملف جديد
+                currentRandomLetters = generateRandomLetters(3);
                 showLoading(false);
             };
             reader.onerror = function() {
@@ -375,6 +382,9 @@
             }
             
             showLoading(true);
+            
+            // توليد أحرف عشوائية جديدة عند التحويل
+            currentRandomLetters = generateRandomLetters(3);
             
             // استخدام setTimeout لمنع تجميد واجهة المستخدم
             setTimeout(() => {
@@ -475,9 +485,8 @@
                         saveButton.className = 'save-btn';
                         saveButton.textContent = 'حفظ الجزء 💾';
                         saveButton.onclick = function() {
-                            // توليد اسم ملف عشوائي وفق النسق المطلوب
-                            const randomLetters = generateRandomLetters(3);
-                            const fileName = `${randomLetters}(${index + 1}-${chunks.length}).txt`;
+                            // استخدام المتغير العام للأحرف العشوائية
+                            const fileName = `${currentRandomLetters}(${index + 1}-${chunks.length}).txt`;
                             saveTextAsFile(chunk, fileName);
                         };
                         
