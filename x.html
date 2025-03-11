@@ -88,22 +88,71 @@
             transform: translateY(0);
         }
 
-        #copyBtn {
+        .copy-btn {
             background: #2ecc71;
         }
 
-        #copyBtn:hover {
+        .copy-btn:hover {
             background: #27ae60;
         }
+        
+        .toggle-btn {
+            background: #9b59b6;
+        }
+        
+        .toggle-btn:hover {
+            background: #8e44ad;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
 
-        #result {
+        #result-container {
             margin-top: 1rem;
+        }
+        
+        .result-block {
+            margin-bottom: 1rem;
             padding: 1rem;
             background: #1a1a1a;
             border-radius: 8px;
-            min-height: 50px;
             word-break: break-all;
             border: 1px solid #3d3d3d;
+            position: relative;
+        }
+        
+        .result-heading {
+            margin-bottom: 0.5rem;
+            color: #0984e3;
+            font-weight: bold;
+        }
+        
+        .numbers-count {
+            color: #aaa;
+            font-size: 0.8rem;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+        }
+        
+        .result-content {
+            max-height: 100px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .result-content.expanded {
+            max-height: none;
+        }
+        
+        .expand-indicator {
+            text-align: center;
+            color: #aaa;
+            margin: 0.5rem 0;
+            font-size: 0.8rem;
         }
 
         .success-message {
@@ -136,12 +185,16 @@
             textarea {
                 height: 150px;
             }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1></h1>
+        <h1>محول الأرقام</h1>
         <textarea id="input" placeholder="ضع الأرقام هنا يا بريعصي مثل:
 50____ 1
 211____ 2
@@ -149,15 +202,14 @@
 ..."></textarea>
         <div class="button-group">
             <button onclick="convertNumbers()">تحويل ↺</button>
-            <button id="copyBtn" onclick="copyResult()">نسخ النتيجة 📋</button>
         </div>
-        <div id="result"></div>
+        <div id="result-container"></div>
     </div>
 
     <script>
         function convertNumbers() {
             const input = document.getElementById('input').value;
-            const result = document.getElementById('result');
+            const resultContainer = document.getElementById('result-container');
             
             const lines = input.split('\n');
             
@@ -170,16 +222,86 @@
             
             const output = numbers.join('_');
             
-            result.textContent = output;
+            // تقسيم النتيجة إلى أجزاء بحيث كل جزء يحتوي على 1000 رقم
+            const MAX_NUMBERS = 1000;
+            const chunks = [];
+            const outputNumbers = output.split('_');
+            
+            for (let i = 0; i < outputNumbers.length; i += MAX_NUMBERS) {
+                const chunk = outputNumbers.slice(i, i + MAX_NUMBERS).join('_');
+                chunks.push(chunk);
+            }
+            
+            // عرض الأجزاء في صفحة الويب
+            resultContainer.innerHTML = '';
+            
+            chunks.forEach((chunk, index) => {
+                const resultBlock = document.createElement('div');
+                resultBlock.className = 'result-block';
+                
+                const heading = document.createElement('div');
+                heading.className = 'result-heading';
+                heading.textContent = `الجزء ${index + 1} من ${chunks.length}`;
+                
+                const numbersCount = document.createElement('div');
+                numbersCount.className = 'numbers-count';
+                // عدد الأرقام هو عدد العلامات '_' + 1
+                const numCount = (chunk.match(/_/g) || []).length + 1;
+                numbersCount.textContent = `${numCount} رقم`;
+                
+                const contentWrapper = document.createElement('div');
+                contentWrapper.className = 'result-content';
+                
+                const content = document.createElement('div');
+                content.textContent = chunk;
+                
+                contentWrapper.appendChild(content);
+                
+                const expandIndicator = document.createElement('div');
+                expandIndicator.className = 'expand-indicator';
+                expandIndicator.textContent = '... انقر على زر التوسعة لعرض الكل';
+                
+                const actionButtons = document.createElement('div');
+                actionButtons.className = 'action-buttons';
+                
+                const toggleButton = document.createElement('button');
+                toggleButton.className = 'toggle-btn';
+                toggleButton.textContent = 'توسيع النص 🔍';
+                toggleButton.onclick = function() {
+                    contentWrapper.classList.toggle('expanded');
+                    if (contentWrapper.classList.contains('expanded')) {
+                        toggleButton.textContent = 'تصغير النص 🔍';
+                        expandIndicator.style.display = 'none';
+                    } else {
+                        toggleButton.textContent = 'توسيع النص 🔍';
+                        expandIndicator.style.display = 'block';
+                    }
+                };
+                
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-btn';
+                copyButton.textContent = 'نسخ هذا الجزء 📋';
+                copyButton.onclick = function() {
+                    copyToClipboard(chunk, `تم نسخ الجزء ${index + 1} (${numCount} رقم)`);
+                };
+                
+                actionButtons.appendChild(toggleButton);
+                actionButtons.appendChild(copyButton);
+                
+                resultBlock.appendChild(heading);
+                resultBlock.appendChild(numbersCount);
+                resultBlock.appendChild(contentWrapper);
+                resultBlock.appendChild(expandIndicator);
+                resultBlock.appendChild(actionButtons);
+                
+                resultContainer.appendChild(resultBlock);
+            });
         }
 
-        function copyResult() {
-            const result = document.getElementById('result');
-            if (result.textContent) {
-                navigator.clipboard.writeText(result.textContent)
-                    .then(() => showSuccessMessage('تم النسخ بنجاح!'))
-                    .catch(err => console.error('فشل النسخ:', err));
-            }
+        function copyToClipboard(text, successMessage) {
+            navigator.clipboard.writeText(text)
+                .then(() => showSuccessMessage(successMessage))
+                .catch(err => console.error('فشل النسخ:', err));
         }
 
         function showSuccessMessage(message) {
