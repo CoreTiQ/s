@@ -123,6 +123,14 @@
             background: var(--success-hover);
         }
         
+        .save-btn {
+            background: #e67e22;
+        }
+        
+        .save-btn:hover {
+            background: #d35400;
+        }
+        
         .toggle-btn {
             background: var(--purple-color);
         }
@@ -462,8 +470,20 @@
                             copyToClipboard(chunk, `تم نسخ الجزء ${index + 1} (${numCount} رقم)`);
                         };
                         
+                        // إضافة زر حفظ الجزء
+                        const saveButton = document.createElement('button');
+                        saveButton.className = 'save-btn';
+                        saveButton.textContent = 'حفظ الجزء 💾';
+                        saveButton.onclick = function() {
+                            // توليد اسم ملف عشوائي وفق النسق المطلوب
+                            const randomLetters = generateRandomLetters(3);
+                            const fileName = `${randomLetters}(${index + 1}-${chunks.length}).txt`;
+                            saveTextAsFile(chunk, fileName);
+                        };
+                        
                         actionButtons.appendChild(toggleButton);
                         actionButtons.appendChild(copyButton);
+                        actionButtons.appendChild(saveButton);
                         
                         resultBlock.appendChild(headingDiv);
                         resultBlock.appendChild(contentWrapper);
@@ -500,6 +520,43 @@
                 });
         }
 
+        // توليد أحرف كبيرة عشوائية
+        function generateRandomLetters(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+        
+        // حفظ النص كملف
+        function saveTextAsFile(text, fileName) {
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            
+            // للمتصفحات الحديثة
+            if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                window.navigator.msSaveOrOpenBlob(blob, fileName);
+                showSuccessMessage(`تم حفظ الملف باسم ${fileName}`);
+                return;
+            }
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            
+            // تنظيف
+            setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+            }, 100);
+            
+            showSuccessMessage(`تم حفظ الملف باسم ${fileName}`);
+        }
+        
         function showSuccessMessage(message, isError = false) {
             // إزالة أي رسائل موجودة
             const existingMessages = document.querySelectorAll('.success-message');
