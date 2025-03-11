@@ -5,38 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>محول الأرقام</title>
     <style>
+        :root {
+            --primary-color: #0984e3;
+            --primary-hover: #0056b3;
+            --success-color: #2ecc71;
+            --success-hover: #27ae60;
+            --purple-color: #9b59b6;
+            --purple-hover: #8e44ad;
+            --background-dark: #1a1a1a;
+            --card-background: #2d2d2d;
+            --border-color: #3d3d3d;
+            --text-color: #ffffff;
+            --text-muted: #aaaaaa;
+            --radius: 8px;
+            --transition: 0.3s ease;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
         }
 
         body {
-            background: #1a1a1a;
+            background: var(--background-dark);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            color: #ffffff;
+            color: var(--text-color);
+            direction: rtl;
         }
 
         .container {
-            background: #2d2d2d;
+            background: var(--card-background);
             padding: 2rem;
-            border-radius: 15px;
+            border-radius: var(--radius);
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             width: 100%;
             max-width: 600px;
-            border: 1px solid #3d3d3d;
+            border: 1px solid var(--border-color);
+            transition: transform var(--transition);
+        }
+
+        @media (hover: hover) {
+            .container:hover {
+                transform: translateY(-5px);
+            }
         }
 
         h1 {
-            color: #ffffff;
+            color: var(--text-color);
             margin-bottom: 1.5rem;
             text-align: center;
             font-weight: 600;
+            font-size: 1.75rem;
         }
 
         textarea {
@@ -44,18 +69,18 @@
             height: 200px;
             padding: 1rem;
             margin-bottom: 1rem;
-            border: 2px solid #3d3d3d;
-            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
             resize: vertical;
             font-size: 16px;
-            background: #1a1a1a;
-            color: #ffffff;
-            transition: border-color 0.3s ease;
+            background: var(--background-dark);
+            color: var(--text-color);
+            transition: border-color var(--transition);
         }
 
         textarea:focus {
             outline: none;
-            border-color: #0984e3;
+            border-color: var(--primary-color);
         }
 
         .button-group {
@@ -65,22 +90,24 @@
         }
 
         button {
-            background: #0984e3;
+            background: var(--primary-color);
             color: white;
             border: none;
             padding: 0.8rem 2rem;
-            border-radius: 8px;
+            border-radius: var(--radius);
             cursor: pointer;
             font-size: 16px;
-            transition: transform 0.2s ease, background 0.3s ease;
+            transition: background var(--transition), transform 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
         button:hover {
-            background: #0056b3;
+            background: var(--primary-hover);
             transform: translateY(-2px);
         }
 
@@ -89,25 +116,53 @@
         }
 
         .copy-btn {
-            background: #2ecc71;
+            background: var(--success-color);
         }
 
         .copy-btn:hover {
-            background: #27ae60;
+            background: var(--success-hover);
         }
         
         .toggle-btn {
-            background: #9b59b6;
+            background: var(--purple-color);
         }
         
         .toggle-btn:hover {
-            background: #8e44ad;
+            background: var(--purple-hover);
         }
         
         .action-buttons {
             display: flex;
             gap: 0.5rem;
             margin-top: 0.5rem;
+        }
+        
+        .file-upload {
+            margin-bottom: 1rem;
+        }
+        
+        .file-label {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 16px;
+            transition: background var(--transition), transform 0.2s ease;
+            text-align: center;
+            width: 100%;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .file-label:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        
+        .upload-icon {
+            margin-right: 5px;
         }
 
         #result-container {
@@ -117,31 +172,39 @@
         .result-block {
             margin-bottom: 1rem;
             padding: 1rem;
-            background: #1a1a1a;
-            border-radius: 8px;
+            background: var(--background-dark);
+            border-radius: var(--radius);
             word-break: break-all;
-            border: 1px solid #3d3d3d;
+            border: 1px solid var(--border-color);
             position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: border-color var(--transition);
+        }
+        
+        .result-block:hover {
+            border-color: var(--primary-color);
         }
         
         .result-heading {
             margin-bottom: 0.5rem;
-            color: #0984e3;
+            color: var(--primary-color);
             font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .numbers-count {
-            color: #aaa;
-            font-size: 0.8rem;
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
         }
         
         .result-content {
             max-height: 100px;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            transition: max-height var(--transition);
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
         
         .result-content.expanded {
@@ -150,21 +213,26 @@
         
         .expand-indicator {
             text-align: center;
-            color: #aaa;
+            color: var(--text-muted);
             margin: 0.5rem 0;
             font-size: 0.8rem;
+            background-color: rgba(0,0,0,0.2);
+            padding: 0.25rem;
+            border-radius: var(--radius);
         }
 
         .success-message {
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #2ecc71;
+            background: var(--success-color);
             color: white;
-            padding: 1rem;
-            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
             animation: slideIn 0.3s ease, slideOut 0.3s ease 2s forwards;
             z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            max-width: 90%;
         }
 
         @keyframes slideIn {
@@ -176,10 +244,35 @@
             from { transform: translateX(0); opacity: 1; }
             to { transform: translateX(100%); opacity: 0; }
         }
+        
+        /* Loading Spinner */
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .processing {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .processing button {
+            cursor: not-allowed;
+        }
 
         @media (max-width: 480px) {
             .container {
-                padding: 1rem;
+                padding: 1.25rem;
             }
             
             textarea {
@@ -189,124 +282,234 @@
             .action-buttons {
                 flex-direction: column;
             }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>محول الأرقام</h1>
-        <textarea id="input" placeholder="ضع الأرقام هنا يا بريعصي مثل:
+        <textarea id="input" placeholder="ضع الأرقام هنا مثل:
 50____ 1
 211____ 2
 138____ 3
 ..."></textarea>
+        
+        <div class="file-upload">
+            <label for="file-input" class="file-label">رفع ملف نصي (txt) <span class="upload-icon">📄</span></label>
+            <input type="file" id="file-input" accept=".txt" style="display: none;" />
+        </div>
+        
         <div class="button-group">
-            <button onclick="convertNumbers()">تحويل ↺</button>
+            <button id="convert-btn" onclick="convertNumbers()">تحويل الأرقام <span id="spinner" class="spinner" style="display: none;"></span></button>
         </div>
         <div id="result-container"></div>
     </div>
 
     <script>
+        // تحسين الأداء باستخدام العناصر المخزنة
+        const inputElement = document.getElementById('input');
+        const resultContainer = document.getElementById('result-container');
+        const fileInput = document.getElementById('file-input');
+        const convertBtn = document.getElementById('convert-btn');
+        const spinner = document.getElementById('spinner');
+        
+        // إضافة مستمع حدث لرفع الملف
+        document.addEventListener('DOMContentLoaded', function() {
+            fileInput.addEventListener('change', handleFileUpload);
+            
+            // إضافة مستمع لتغييرات النص لتعطيل زر التحويل إذا كان الإدخال فارغاً
+            inputElement.addEventListener('input', function() {
+                convertBtn.disabled = !inputElement.value.trim();
+            });
+            
+            // تعطيل زر التحويل مبدئياً إذا كان الإدخال فارغاً
+            convertBtn.disabled = !inputElement.value.trim();
+        });
+        
+        // معالجة رفع الملف
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // إظهار مؤشر التحميل
+            showLoading(true);
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const contents = e.target.result;
+                inputElement.value = contents;
+                showSuccessMessage('تم تحميل الملف بنجاح');
+                convertBtn.disabled = !contents.trim();
+                showLoading(false);
+            };
+            reader.onerror = function() {
+                showSuccessMessage('حدث خطأ أثناء قراءة الملف', true);
+                showLoading(false);
+            };
+            reader.readAsText(file);
+        }
+        
+        function showLoading(isLoading) {
+            spinner.style.display = isLoading ? 'inline-block' : 'none';
+            document.body.classList.toggle('processing', isLoading);
+        }
+        
         function convertNumbers() {
-            const input = document.getElementById('input').value;
-            const resultContainer = document.getElementById('result-container');
+            const input = inputElement.value.trim();
             
-            const lines = input.split('\n');
-            
-            const numbers = lines
-                .map(line => {
-                    const match = line.match(/(\d+)_+/);
-                    return match ? match[1] : null;
-                })
-                .filter(num => num !== null);
-            
-            const output = numbers.join('_');
-            
-            // تقسيم النتيجة إلى أجزاء بحيث كل جزء يحتوي على 1000 رقم
-            const MAX_NUMBERS = 1000;
-            const chunks = [];
-            const outputNumbers = output.split('_');
-            
-            for (let i = 0; i < outputNumbers.length; i += MAX_NUMBERS) {
-                const chunk = outputNumbers.slice(i, i + MAX_NUMBERS).join('_');
-                chunks.push(chunk);
+            if (!input) {
+                showSuccessMessage('الرجاء إدخال بيانات أولاً', true);
+                return;
             }
             
-            // عرض الأجزاء في صفحة الويب
-            resultContainer.innerHTML = '';
+            showLoading(true);
             
-            chunks.forEach((chunk, index) => {
-                const resultBlock = document.createElement('div');
-                resultBlock.className = 'result-block';
-                
-                const heading = document.createElement('div');
-                heading.className = 'result-heading';
-                heading.textContent = `الجزء ${index + 1} من ${chunks.length}`;
-                
-                const numbersCount = document.createElement('div');
-                numbersCount.className = 'numbers-count';
-                // عدد الأرقام هو عدد العلامات '_' + 1
-                const numCount = (chunk.match(/_/g) || []).length + 1;
-                numbersCount.textContent = `${numCount} رقم`;
-                
-                const contentWrapper = document.createElement('div');
-                contentWrapper.className = 'result-content';
-                
-                const content = document.createElement('div');
-                content.textContent = chunk;
-                
-                contentWrapper.appendChild(content);
-                
-                const expandIndicator = document.createElement('div');
-                expandIndicator.className = 'expand-indicator';
-                expandIndicator.textContent = '... انقر على زر التوسعة لعرض الكل';
-                
-                const actionButtons = document.createElement('div');
-                actionButtons.className = 'action-buttons';
-                
-                const toggleButton = document.createElement('button');
-                toggleButton.className = 'toggle-btn';
-                toggleButton.textContent = 'توسيع النص 🔍';
-                toggleButton.onclick = function() {
-                    contentWrapper.classList.toggle('expanded');
-                    if (contentWrapper.classList.contains('expanded')) {
-                        toggleButton.textContent = 'تصغير النص 🔍';
-                        expandIndicator.style.display = 'none';
-                    } else {
-                        toggleButton.textContent = 'توسيع النص 🔍';
-                        expandIndicator.style.display = 'block';
+            // استخدام setTimeout لمنع تجميد واجهة المستخدم
+            setTimeout(() => {
+                try {
+                    const lines = input.split('\n');
+                    
+                    // استخدام تعبير منتظم محسن يدعم أنماط مختلفة من البيانات
+                    const numbers = lines
+                        .map(line => {
+                            const match = line.match(/(\d+)_+/);
+                            return match ? match[1] : null;
+                        })
+                        .filter(num => num !== null);
+                    
+                    if (numbers.length === 0) {
+                        showSuccessMessage('لم يتم العثور على أرقام صالحة', true);
+                        showLoading(false);
+                        return;
                     }
-                };
-                
-                const copyButton = document.createElement('button');
-                copyButton.className = 'copy-btn';
-                copyButton.textContent = 'نسخ هذا الجزء 📋';
-                copyButton.onclick = function() {
-                    copyToClipboard(chunk, `تم نسخ الجزء ${index + 1} (${numCount} رقم)`);
-                };
-                
-                actionButtons.appendChild(toggleButton);
-                actionButtons.appendChild(copyButton);
-                
-                resultBlock.appendChild(heading);
-                resultBlock.appendChild(numbersCount);
-                resultBlock.appendChild(contentWrapper);
-                resultBlock.appendChild(expandIndicator);
-                resultBlock.appendChild(actionButtons);
-                
-                resultContainer.appendChild(resultBlock);
-            });
+                    
+                    const output = numbers.join('_');
+                    
+                    // تقسيم النتيجة إلى أجزاء بحيث كل جزء يحتوي على 1000 رقم
+                    const MAX_NUMBERS = 1000;
+                    const chunks = [];
+                    const outputNumbers = output.split('_');
+                    
+                    for (let i = 0; i < outputNumbers.length; i += MAX_NUMBERS) {
+                        const chunk = outputNumbers.slice(i, i + MAX_NUMBERS).join('_');
+                        chunks.push(chunk);
+                    }
+                    
+                    // عرض الأجزاء في صفحة الويب
+                    resultContainer.innerHTML = '';
+                    
+                    const createResultBlock = (chunk, index) => {
+                        const numCount = (chunk.match(/_/g) || []).length + 1;
+                        
+                        const resultBlock = document.createElement('div');
+                        resultBlock.className = 'result-block';
+                        
+                        const headingDiv = document.createElement('div');
+                        headingDiv.className = 'result-heading';
+                        
+                        const heading = document.createElement('span');
+                        heading.textContent = `الجزء ${index + 1} من ${chunks.length}`;
+                        
+                        const numbersCount = document.createElement('span');
+                        numbersCount.className = 'numbers-count';
+                        numbersCount.textContent = `${numCount} رقم`;
+                        
+                        headingDiv.appendChild(heading);
+                        headingDiv.appendChild(numbersCount);
+                        
+                        const contentWrapper = document.createElement('div');
+                        contentWrapper.className = 'result-content';
+                        contentWrapper.id = `content-${index}`;
+                        
+                        const content = document.createElement('div');
+                        content.textContent = chunk;
+                        
+                        contentWrapper.appendChild(content);
+                        
+                        const expandIndicator = document.createElement('div');
+                        expandIndicator.className = 'expand-indicator';
+                        expandIndicator.id = `indicator-${index}`;
+                        expandIndicator.textContent = '... انقر على زر التوسعة لعرض الكل';
+                        
+                        const actionButtons = document.createElement('div');
+                        actionButtons.className = 'action-buttons';
+                        
+                        const toggleButton = document.createElement('button');
+                        toggleButton.className = 'toggle-btn';
+                        toggleButton.textContent = 'توسيع النص 🔍';
+                        toggleButton.onclick = function() {
+                            const contentEl = document.getElementById(`content-${index}`);
+                            const indicatorEl = document.getElementById(`indicator-${index}`);
+                            
+                            contentEl.classList.toggle('expanded');
+                            if (contentEl.classList.contains('expanded')) {
+                                toggleButton.textContent = 'تصغير النص 🔍';
+                                indicatorEl.style.display = 'none';
+                            } else {
+                                toggleButton.textContent = 'توسيع النص 🔍';
+                                indicatorEl.style.display = 'block';
+                            }
+                        };
+                        
+                        const copyButton = document.createElement('button');
+                        copyButton.className = 'copy-btn';
+                        copyButton.textContent = 'نسخ هذا الجزء 📋';
+                        copyButton.onclick = function() {
+                            copyToClipboard(chunk, `تم نسخ الجزء ${index + 1} (${numCount} رقم)`);
+                        };
+                        
+                        actionButtons.appendChild(toggleButton);
+                        actionButtons.appendChild(copyButton);
+                        
+                        resultBlock.appendChild(headingDiv);
+                        resultBlock.appendChild(contentWrapper);
+                        resultBlock.appendChild(expandIndicator);
+                        resultBlock.appendChild(actionButtons);
+                        
+                        return resultBlock;
+                    };
+                    
+                    // استخدام documentFragment لتحسين الأداء
+                    const fragment = document.createDocumentFragment();
+                    chunks.forEach((chunk, index) => {
+                        fragment.appendChild(createResultBlock(chunk, index));
+                    });
+                    
+                    resultContainer.appendChild(fragment);
+                    
+                    showSuccessMessage(`تم تحويل ${numbers.length} رقم بنجاح`);
+                } catch (error) {
+                    console.error('Error:', error);
+                    showSuccessMessage('حدث خطأ أثناء معالجة البيانات', true);
+                } finally {
+                    showLoading(false);
+                }
+            }, 10);
         }
 
         function copyToClipboard(text, successMessage) {
             navigator.clipboard.writeText(text)
                 .then(() => showSuccessMessage(successMessage))
-                .catch(err => console.error('فشل النسخ:', err));
+                .catch(err => {
+                    console.error('فشل النسخ:', err);
+                    showSuccessMessage('حدث خطأ أثناء محاولة النسخ', true);
+                });
         }
 
-        function showSuccessMessage(message) {
+        function showSuccessMessage(message, isError = false) {
+            // إزالة أي رسائل موجودة
+            const existingMessages = document.querySelectorAll('.success-message');
+            existingMessages.forEach(el => el.remove());
+            
             const messageElement = document.createElement('div');
             messageElement.className = 'success-message';
+            if (isError) {
+                messageElement.style.background = '#e74c3c';
+            }
             messageElement.textContent = message;
             document.body.appendChild(messageElement);
             
